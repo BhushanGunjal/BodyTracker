@@ -3,20 +3,6 @@ from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 import { db } from "./firebase-init.js";
 
-function withTimeout(promise, ms, operationName) {
-    let timeoutId;
-    const timeoutPromise = new Promise((_, reject) => {
-        timeoutId = setTimeout(() => {
-            reject(new Error(`${operationName} timed out after ${ms}ms`));
-        }, ms);
-    });
-
-    return Promise.race([
-        promise.finally(() => clearTimeout(timeoutId)),
-        timeoutPromise
-    ]);
-}
-
 export async function saveSymptomLog(data) {
     const payload = {
         tremor: Number(data.tremor),
@@ -27,21 +13,14 @@ export async function saveSymptomLog(data) {
 
     try {
         console.log("[firebase] saveSymptomLog started", payload);
-        const docRef = await withTimeout(
-            addDoc(collection(db, "symptomLogs"), payload),
-            12000,
-            "saveSymptomLog"
-        );
+        const docRef = await addDoc(collection(db, "symptomLogs"), payload);
         console.log("[firebase] saveSymptomLog success", docRef.id);
         return docRef;
     } catch (error) {
-        console.error("[firebase] saveSymptomLog failed", {
-            code: error?.code,
-            message: error?.message,
-            payload
-        });
+        console.error("[firebase] REAL saveSymptomLog error:", error);
         throw error;
     }
+    
 }
 
 export async function saveMedicationLog() {
@@ -50,19 +29,11 @@ export async function saveMedicationLog() {
     };
     try {
         console.log("[firebase] saveMedicationLog started", payload);
-        const docRef = await withTimeout(
-            addDoc(collection(db, "medicationLogs"), payload),
-            12000,
-            "saveMedicationLog"
-        );
+        const docRef = await addDoc(collection(db, "medicationLogs"), payload);
         console.log("[firebase] saveMedicationLog success", docRef.id);
         return docRef;
     } catch (error) {
-        console.error("[firebase] saveMedicationLog failed", {
-            code: error?.code,
-            message: error?.message,
-            payload
-        });
+        console.error("[firebase] REAL saveMedicationLog error:", error);
         throw error;
     }
 }
