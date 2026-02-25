@@ -12,9 +12,9 @@ export async function saveSymptomLog(data) {
     };
 
     try {
-        console.log("[firebase] saveSymptomLog started", payload);
+//        console.log("[firebase] saveSymptomLog started", payload);
         const docRef = await addDoc(collection(db, "symptomLogs"), payload);
-        console.log("[firebase] saveSymptomLog success", docRef.id);
+//        console.log("[firebase] saveSymptomLog success", docRef.id);
         return docRef;
     } catch (error) {
         console.error("[firebase] REAL saveSymptomLog error:", error);
@@ -28,9 +28,9 @@ export async function saveMedicationLog() {
         timestamp: serverTimestamp()
     };
     try {
-        console.log("[firebase] saveMedicationLog started", payload);
+//        console.log("[firebase] saveMedicationLog started", payload);
         const docRef = await addDoc(collection(db, "medicationLogs"), payload);
-        console.log("[firebase] saveMedicationLog success", docRef.id);
+//        console.log("[firebase] saveMedicationLog success", docRef.id);
         return docRef;
     } catch (error) {
         console.error("[firebase] REAL saveMedicationLog error:", error);

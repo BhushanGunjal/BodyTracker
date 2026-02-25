@@ -47,7 +47,7 @@ if (!submitBtn) {
     console.error("[init] Missing submit button: #submit-btn");
 } else {
     submitBtn.addEventListener("click", async () => {
-    console.log("[ui] Submit clicked", { ...state });
+//    console.log("[ui] Submit clicked", { ...state });
 
     if (state.tremor === null || state.stiffness === null || state.movement === null) {
         alert("Please complete all fields.");
@@ -56,10 +56,10 @@ if (!submitBtn) {
 
     try {
         const docRef = await saveSymptomLog(state);
-        console.log("[save] Symptom log saved", docRef.id, {
-            ...state,
-            timestamp: new Date()
-        });
+//        console.log("[save] Symptom log saved", docRef.id, {
+//            ...state,
+//            timestamp: new Date()
+//        });
         resetForm();
     } catch (error) {
         console.error("Error saving symptom log:", error);
@@ -76,7 +76,7 @@ if (medicationBtn) {
         console.log("[ui] Medication clicked");
         try {
             const docRef = await saveMedicationLog();
-            console.log("[save] Medication log saved", docRef.id);
+//            console.log("[save] Medication log saved", docRef.id);
             medicationBtn.textContent = "Logged ✓";
             setTimeout(() => {
                 medicationBtn.textContent = "Medication Taken Now";
