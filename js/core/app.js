@@ -6,48 +6,59 @@ let state = {
     movement: null
 };
 
-// Generic handler for button groups
-function handleSelection(sectionId, key) {
-    const section = document.getElementById(sectionId);
-    if (!section) {
-        console.error(`[init] Missing section: #${sectionId}`);
-        return;
-    }
 
-    const buttons = section.querySelectorAll("button");
+// -----------------------------
+// Button Selection (Bootstrap)
+// -----------------------------
 
-    buttons.forEach(btn => {
-        btn.addEventListener("click", () => {
-            state[key] = btn.dataset.value;
+document.querySelectorAll("[data-type]").forEach(btn => {
+    btn.addEventListener("click", () => {
 
-            buttons.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
+        const type = btn.dataset.type;
+        const value = btn.dataset.value;
+
+        state[type] = value;
+
+        const group = btn.closest(".btn-group");
+        const groupButtons = group.querySelectorAll("button");
+
+        groupButtons.forEach(b => {
+            b.classList.remove("active", "btn-secondary");
+            b.classList.add("btn-outline-secondary");
         });
-    });
-}
 
-handleSelection("tremor-section", "tremor");
-handleSelection("stiffness-section", "stiffness");
-handleSelection("movement-section", "movement");
-console.log("[init] App initialized");
+        btn.classList.remove("btn-outline-secondary");
+        btn.classList.add("btn-secondary", "active");
+    });
+});
+
+
+
+// -----------------------------
+// Reset Form
+// -----------------------------
 
 function resetForm() {
     state.tremor = null;
     state.stiffness = null;
     state.movement = null;
 
-    document.querySelectorAll(".active").forEach(btn => {
-        btn.classList.remove("active");
+    document.querySelectorAll("[data-type]").forEach(btn => {
+        btn.classList.remove("active", "btn-secondary");
+        btn.classList.add("btn-outline-secondary");
     });
 }
 
-const submitBtn = document.getElementById("submit-btn");
 
-if (!submitBtn) {
-    console.error("[init] Missing submit button: #submit-btn");
-} else {
-    submitBtn.addEventListener("click", async () => {
-//    console.log("[ui] Submit clicked", { ...state });
+
+// -----------------------------
+// Hourly Submit
+// -----------------------------
+
+const hourlySubmitBtn = document.getElementById("hourly-submit-btn");
+const modalElement = document.getElementById("hourlyModal");
+
+hourlySubmitBtn.addEventListener("click", async () => {
 
     if (state.tremor === null || state.stiffness === null || state.movement === null) {
         alert("Please complete all fields.");
@@ -55,40 +66,54 @@ if (!submitBtn) {
     }
 
     try {
-        const docRef = await saveSymptomLog(state);
-//        console.log("[save] Symptom log saved", docRef.id, {
-//            ...state,
-//            timestamp: new Date()
-//        });
+        await saveSymptomLog(state);
+
         resetForm();
+
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        modalInstance.hide();
+
     } catch (error) {
         console.error("Error saving symptom log:", error);
         alert(`Failed to save symptom log: ${error.message || error}`);
     }
-    });
-}
+});
 
-// Medication logging
+// -----------------------------
+// Medication Logging
+// -----------------------------
+
 const medicationBtn = document.getElementById("medication-btn");
+const hourlyTopBtn = document.getElementById("hourly-top-btn");
 
-if (medicationBtn) {
-    medicationBtn.addEventListener("click", async () => {
-        console.log("[ui] Medication clicked");
-        try {
-            const docRef = await saveMedicationLog();
-//            console.log("[save] Medication log saved", docRef.id);
-            medicationBtn.textContent = "Logged ✓";
-            setTimeout(() => {
-                medicationBtn.textContent = "Medication Taken Now";
-            }, 1500);
-
-        } catch (error) {
-            console.error("Error logging medication:", error);
-            alert(`Failed to save medication log: ${error.message || error}`);
-        }
+function setActiveTopButton(activeBtn) {
+    [medicationBtn, hourlyTopBtn].forEach(btn => {
+        btn.classList.remove("btn-primary");
+        btn.classList.add("btn-outline-primary");
     });
-} else {
-    console.error("[init] Missing medication button: #medication-btn");
+
+    activeBtn.classList.remove("btn-outline-primary");
+    activeBtn.classList.add("btn-primary");
 }
 
+medicationBtn.addEventListener("click", async () => {
 
+    try {
+        await saveMedicationLog();
+
+        medicationBtn.textContent = "Logged ✓";
+
+        setTimeout(() => {
+            medicationBtn.textContent = "Medication Log";
+        }, 1500);
+
+    } catch (error) {
+        console.error("Error logging medication:", error);
+        alert(`Failed to save medication log: ${error.message || error}`);
+    }
+});
+
+// Hourly click
+hourlyTopBtn.addEventListener("click", () => {
+    setActiveTopButton(hourlyTopBtn);
+});
