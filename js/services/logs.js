@@ -7,7 +7,7 @@ export async function saveSymptomLog(data) {
     const payload = {
         tremor: Number(data.tremor),
         stiffness: Number(data.stiffness),
-        movement: data.movement,
+        movement: Number(data.movement),
         timestamp: serverTimestamp()
     };
 
