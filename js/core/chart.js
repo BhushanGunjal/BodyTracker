@@ -47,69 +47,79 @@ const chartInstances = {
     movementChart: null
 };
 
+let isRendering = false;
+
 export async function renderDashboard() {
+    // Prevent race conditions from overlapping renders
+    if (isRendering) return;
+    
+    isRendering = true;
+    
+    try {
+        const medicationLogs = await fetchMedicationLogs();
+        const logs = await fetchSymptomLogs();
 
-    const medicationLogs = await fetchMedicationLogs();
-    const logs = await fetchSymptomLogs();
+        // Filter logs that have resolved timestamps
+        const validLogs = logs.filter(log => log.timestamp);
+        const validMedicationLogs = medicationLogs.filter(log => log.timestamp);
 
-    // Filter logs that have resolved timestamps
-    const validLogs = logs.filter(log => log.timestamp);
-    const validMedicationLogs = medicationLogs.filter(log => log.timestamp);
+        const medicationTimes = validMedicationLogs.map(log =>
+            log.timestamp.toDate().getTime()
+        );
 
-    const medicationTimes = validMedicationLogs.map(log =>
-        log.timestamp.toDate().getTime()
-    );
+        const tremorData = validLogs.map(log => ({
+            x: log.timestamp.toDate().getTime(),
+            y: log.tremor
+        }));
 
-    const tremorData = validLogs.map(log => ({
-        x: log.timestamp.toDate().getTime(),
-        y: log.tremor
-    }));
+        const stiffnessData = validLogs.map(log => ({
+            x: log.timestamp.toDate().getTime(),
+            y: log.stiffness
+        }));
 
-    const stiffnessData = validLogs.map(log => ({
-        x: log.timestamp.toDate().getTime(),
-        y: log.stiffness
-    }));
+        const movementData = validLogs.map(log => ({
+            x: log.timestamp.toDate().getTime(),
+            y: log.movement
+        }));
 
-    const movementData = validLogs.map(log => ({
-        x: log.timestamp.toDate().getTime(),
-        y: log.movement
-    }));
+        createOrUpdateChart({
+            canvasId: "tremorChart",
+            label: "Tremor",
+            data: tremorData,
+            medicationTimes,
+            min: 0,
+            max: 3,
+            step: 1
+        });
 
-    createOrUpdateChart({
-        canvasId: "tremorChart",
-        label: "Tremor",
-        data: tremorData,
-        medicationTimes,
-        min: 0,
-        max: 3,
-        step: 1
-    });
+        createOrUpdateChart({
+            canvasId: "stiffnessChart",
+            label: "Stiffness",
+            data: stiffnessData,
+            medicationTimes,
+            min: 0,
+            max: 3,
+            step: 1
+        });
 
-    createOrUpdateChart({
-        canvasId: "stiffnessChart",
-        label: "Stiffness",
-        data: stiffnessData,
-        medicationTimes,
-        min: 0,
-        max: 3,
-        step: 1
-    });
-
-    createOrUpdateChart({
-        canvasId: "movementChart",
-        label: "Movement",
-        data: movementData,
-        medicationTimes,
-        min: -1,
-        max: 1,
-        step: 1,
-        tickFormatter: value => {
-            if (value === -1) return "Slow";
-            if (value === 0) return "Normal";
-            if (value === 1) return "Fast";
-            return value;
-        }
-    });
+        createOrUpdateChart({
+            canvasId: "movementChart",
+            label: "Movement",
+            data: movementData,
+            medicationTimes,
+            min: -1,
+            max: 1,
+            step: 1,
+            tickFormatter: value => {
+                if (value === -1) return "Slow";
+                if (value === 0) return "Normal";
+                if (value === 1) return "Fast";
+                return value;
+            }
+        });
+    } finally {
+        isRendering = false;
+    }
 }
 
 function createOrUpdateChart({
