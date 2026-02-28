@@ -1,4 +1,4 @@
-import { collection, addDoc, serverTimestamp } 
+import { collection, addDoc, serverTimestamp, getDocs, query, orderBy }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 import { db } from "./firebase-init.js";
@@ -36,4 +36,53 @@ export async function saveMedicationLog() {
         console.error("[firebase] REAL saveMedicationLog error:", error);
         throw error;
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------ DASHBOARD READ LAYER ------------------ */
+
+export async function fetchSymptomLogs() {
+    const q = query(
+        collection(db, "symptomLogs"),
+        orderBy("timestamp", "asc")
+    );
+
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+}
+
+export async function fetchMedicationLogs() {
+    const q = query(
+        collection(db, "medicationLogs"),
+        orderBy("timestamp", "asc")
+    );
+
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
 }

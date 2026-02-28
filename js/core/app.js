@@ -1,4 +1,5 @@
 import { saveSymptomLog, saveMedicationLog } from "../services/logs.js";
+import { renderDashboard } from "./chart.js";
 
 let state = {
     tremor: null,
@@ -67,7 +68,7 @@ hourlySubmitBtn.addEventListener("click", async () => {
 
     try {
         await saveSymptomLog(state);
-
+        await renderDashboard();
         resetForm();
 
         const modalInstance = bootstrap.Modal.getInstance(modalElement);
@@ -100,7 +101,7 @@ medicationBtn.addEventListener("click", async () => {
 
     try {
         await saveMedicationLog();
-
+        await renderDashboard();
         medicationBtn.textContent = "Logged ✓";
 
         setTimeout(() => {
@@ -117,3 +118,7 @@ medicationBtn.addEventListener("click", async () => {
 hourlyTopBtn.addEventListener("click", () => {
     setActiveTopButton(hourlyTopBtn);
 });
+
+
+
+renderDashboard();
