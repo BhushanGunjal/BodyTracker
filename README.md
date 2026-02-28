@@ -2,6 +2,12 @@
 
 A Progressive Web App (PWA) for tracking Parkinson's disease symptoms and medication timing. Built with vanilla JavaScript, Firebase, and Chart.js.
 
+## 🚀 Live Demo
+
+**Try the app now:** [https://body-tracker-phi.vercel.app](https://body-tracker-phi.vercel.app)
+
+*Deployed on Vercel*
+
 ## Features
 
 - 🔐 **User Authentication** - Secure email/password authentication via Firebase Auth
@@ -156,6 +162,26 @@ Open your browser and navigate to:
 ```
 http://127.0.0.1:5500
 ```
+
+## Deployment
+
+### Vercel
+
+The app is deployed on **Vercel** and accessible at:
+```
+https://body-tracker-phi.vercel.app
+```
+
+**To deploy your own version:**
+
+1. Push code to GitHub repository
+2. Connect repository to [Vercel](https://vercel.com)
+3. Vercel automatically deploys on every git push
+4. Firebase configuration works seamlessly with Vercel
+
+**Note:** Firebase requires adding your Vercel domain to Authorized Domains:
+- Go to Firebase Console → Authentication → Settings
+- Add your Vercel domain (e.g., `body-tracker-phi.vercel.app`) to Authorized Domains
 
 ## Usage
 
