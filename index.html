@@ -1,120 +1,3 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Parkinson Tracker</title>
-    <link rel="stylesheet" href="css/main.css">
-</head>
-<body>
-
-    <h2>Medication Log</h2>
-    
-    <div id="medication-section">
-        <button id="medication-btn">Medication Taken Now</button>
-    </div>
-    
-
-
-    <h2>Hourly Log</h2>
-
-    <div id="tremor-section">
-        <h3>Tremor</h3>
-        <button data-value="0">0</button>
-        <button data-value="1">1</button>
-        <button data-value="2">2</button>
-        <button data-value="3">3</button>
-    </div>
-    <div id="stiffness-section">
-        <h3>Stiffness</h3>
-        <button data-value="0">0</button>
-        <button data-value="1">1</button>
-        <button data-value="2">2</button>
-        <button data-value="3">3</button>
-    </div>
-    <div id="movement-section">
-        <h3>Movement</h3>
-        <button data-value="-1">Slow</button>
-        <button data-value="0">Normal</button>
-        <button data-value="1">Fast</button>
-    </div>
-
-    <button id="submit-btn">Submit</button>
-    <script type="module" src="js/core/app.js"></script>
-</body>
-
-</html>
-
-
-
- -->
-
-
-<!-- 
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Parkinson Tracker</title>
-    <link rel="stylesheet" href="css/main.css">
-</head>
-<body>
-
-    <h1>Parkinson Tracker</h1>
-
-
-    <div id="top-actions">
-        <button id="medication-btn">Medication Log</button>
-        <button id="hourly-btn">Hourly Log</button>
-    </div>
-
-
-    <div id="hourly-modal" class="hidden">
-        <div class="modal-content">
-
-            <h2>Hourly Log</h2>
-
-            <div class="log-section" id="tremor-section">
-                <h3>Tremor</h3>
-                <button data-type="tremor" data-value="0">0</button>
-                <button data-type="tremor" data-value="1">1</button>
-                <button data-type="tremor" data-value="2">2</button>
-                <button data-type="tremor" data-value="3">3</button>
-            </div>
-
-            <div class="log-section" id="stiffness-section">
-                <h3>Stiffness</h3>
-                <button data-type="stiffness" data-value="0">0</button>
-                <button data-type="stiffness" data-value="1">1</button>
-                <button data-type="stiffness" data-value="2">2</button>
-                <button data-type="stiffness" data-value="3">3</button>
-            </div>
-
-            <div class="log-section" id="movement-section">
-                <h3>Movement</h3>
-                <button data-type="movement" data-value="-1">Slow</button>
-                <button data-type="movement" data-value="0">Normal</button>
-                <button data-type="movement" data-value="1">Fast</button>
-            </div>
-
-            <button id="hourly-submit-btn">Log</button>
-            <button id="close-hourly-btn">Cancel</button>
-
-        </div>
-    </div>
-
-    <div id="dashboard">
-        <h2>Dashboard</h2>
-
-    </div>
-
-    <script type="module" src="js/core/app.js"></script>
-</body>
-</html> 
--->
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -126,63 +9,97 @@
 
     <link rel="stylesheet" href="css/main.css">
 </head>
+
+
 <body class="bg-light">
 
-<div class="container py-4">
+<!-- ================= AUTH SECTION ================= -->
+<div id="auth-section" class="container py-5">
 
-    <h1 class="text-center mb-4">Parkinson Tracker</h1>
-
-    <!-- Top Actions -->
-    <div class="d-flex justify-content-center gap-3 mb-5">
-        <button id="medication-btn" class="btn btn-outline-primary btn-lg">
-            Medication Log
-        </button>
-
-        <button id="hourly-top-btn"
-        class="btn btn-outline-primary btn-lg"
-        data-bs-toggle="modal"
-        data-bs-target="#hourlyModal">
-    Hourly Log
-</button>
-    </div>
-
-    <!-- Dashboard -->
-    <div id="dashboard" class="card">
+    <div class="card mx-auto" style="max-width: 400px;">
         <div class="card-body">
-            <h4 class="card-title mb-4">Dashboard</h4>
+            <h4 class="mb-4 text-center">Login / Register</h4>
 
-            <div class="mb-5">
-                <h6>Tremor</h6>
-                <canvas id="tremorChart" height="100"></canvas>
+            <div class="mb-3">
+                <input id="email" type="email" class="form-control" placeholder="Email">
             </div>
 
-            <div class="mb-5">
-                <h6>Stiffness</h6>
-                <canvas id="stiffnessChart" height="100"></canvas>
+            <div class="mb-3">
+                <input id="password" type="password" class="form-control" placeholder="Password">
             </div>
 
-            <div>
-                <h6>Movement</h6>
-                <canvas id="movementChart" height="100"></canvas>
+            <div class="d-grid gap-2">
+                <button id="login-btn" class="btn btn-primary">Login</button>
+                <button id="register-btn" class="btn btn-outline-primary">Register</button>
             </div>
-
         </div>
     </div>
 
 </div>
 
-<!-- Hourly Modal -->
+<!-- ================= APP SECTION ================= -->
+<div id="app-section" style="display:none;">
+
+    <div class="container py-4">
+
+        <h1 class="text-center mb-4">Parkinson Tracker</h1>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <span id="user-email" class="text-muted small"></span>
+            <button id="logout-btn" class="btn btn-outline-danger btn-sm">Logout</button>
+        </div>
+
+        <!-- Top Actions -->
+        <div class="d-flex justify-content-center gap-3 mb-5">
+            <button id="medication-btn" class="btn btn-outline-primary btn-lg">
+                Medication Log
+            </button>
+
+            <button id="hourly-top-btn"
+                class="btn btn-outline-primary btn-lg"
+                data-bs-toggle="modal"
+                data-bs-target="#hourlyModal">
+                Hourly Log
+            </button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Dashboard</h4>
+
+                <div class="mb-5">
+                    <h6>Tremor</h6>
+                    <canvas id="tremorChart" height="100"></canvas>
+                </div>
+
+                <div class="mb-5">
+                    <h6>Stiffness</h6>
+                    <canvas id="stiffnessChart" height="100"></canvas>
+                </div>
+
+                <div>
+                    <h6>Movement</h6>
+                    <canvas id="movementChart" height="100"></canvas>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Hourly Modal (must stay outside auth/app sections) -->
 <div class="modal fade" id="hourlyModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title">Hourly Log</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
-
                 <div class="mb-3">
                     <label class="form-label fw-bold">Tremor</label>
                     <div class="btn-group w-100">
@@ -211,23 +128,19 @@
                         <button class="btn btn-outline-secondary" data-type="movement" data-value="1">Fast</button>
                     </div>
                 </div>
-
             </div>
 
             <div class="modal-footer">
-                <button id="hourly-submit-btn" class="btn btn-success">
-                    Log
-                </button>
+                <button id="hourly-submit-btn" class="btn btn-success">Log</button>
             </div>
-
         </div>
     </div>
 </div>
 
-<!-- Bootstrap JS bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <script type="module" src="js/core/app.js"></script>
 
 </body>
+
+
 </html>

@@ -52,13 +52,9 @@ export async function renderDashboard() {
     const medicationLogs = await fetchMedicationLogs();
     const logs = await fetchSymptomLogs();
 
-    if (!logs.length) return;
-
     // Filter logs that have resolved timestamps
     const validLogs = logs.filter(log => log.timestamp);
     const validMedicationLogs = medicationLogs.filter(log => log.timestamp);
-
-    if (!validLogs.length) return;
 
     const medicationTimes = validMedicationLogs.map(log =>
         log.timestamp.toDate().getTime()
@@ -129,7 +125,6 @@ function createOrUpdateChart({
 
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
-    if (!data.length) return;
 
     const existingChart = chartInstances[canvasId];
     
