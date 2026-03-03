@@ -48,6 +48,35 @@ const chartInstances = {
 };
 
 let isRendering = false;
+let selectedDate = new Date().toISOString().split('T')[0]; // Default to today
+
+export function initChartDateFilter() {
+    const dateFilter = document.getElementById("chart-date-filter");
+    if (!dateFilter) {
+        console.log("Date filter element not found!");
+        return;
+    }
+
+    console.log("Setting up date filter");
+
+    // Set default date to today in YYYY-MM-DD format (local timezone)
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    selectedDate = `${year}-${month}-${day}`;
+    
+    dateFilter.value = selectedDate;
+    console.log("Date filter initialized, selectedDate:", selectedDate);
+
+    dateFilter.addEventListener("change", async (e) => {
+        console.log("Change event fired, new value:", e.target.value);
+        selectedDate = e.target.value;
+        console.log("Date changed to:", selectedDate);
+        console.log("isRendering before call:", isRendering);
+        await renderDashboard();
+    });
+}
 
 export async function renderDashboard() {
     // Prevent race conditions from overlapping renders
@@ -63,22 +92,45 @@ export async function renderDashboard() {
         const validLogs = logs.filter(log => log.timestamp);
         const validMedicationLogs = medicationLogs.filter(log => log.timestamp);
 
-        const medicationTimes = validMedicationLogs.map(log =>
-            log.timestamp.toDate().getTime()
+        console.log("Total valid logs:", validLogs.length, "Selected date:", selectedDate);
+
+        // Filter by selected date using local timezone
+        const filteredLogs = validLogs.filter(log => {
+            const logDate = log.timestamp.toDate();
+            const year = logDate.getFullYear();
+            const month = String(logDate.getMonth() + 1).padStart(2, '0');
+            const day = String(logDate.getDate()).padStart(2, '0');
+            const logDateString = `${year}-${month}-${day}`;
+            return logDateString === selectedDate;
+        });
+
+        const filteredMedicationLogs = validMedicationLogs.filter(log => {
+            const logDate = log.timestamp.toDate();
+            const year = logDate.getFullYear();
+            const month = String(logDate.getMonth() + 1).padStart(2, '0');
+            const day = String(logDate.getDate()).padStart(2, '0');
+            const logDateString = `${year}-${month}-${day}`;
+            return logDateString === selectedDate;
+        });
+
+        console.log("Filtered logs after date filter:", filteredLogs.length);
+
+        const medicationTimes = filteredMedicationLogs.map(log =>
+            log.timestamp.toDate().getHours()
         );
 
-        const tremorData = validLogs.map(log => ({
-            x: log.timestamp.toDate().getTime(),
+        const tremorData = filteredLogs.map(log => ({
+            x: log.timestamp.toDate().getHours(),
             y: log.tremor
         }));
 
-        const stiffnessData = validLogs.map(log => ({
-            x: log.timestamp.toDate().getTime(),
+        const stiffnessData = filteredLogs.map(log => ({
+            x: log.timestamp.toDate().getHours(),
             y: log.stiffness
         }));
 
-        const movementData = validLogs.map(log => ({
-            x: log.timestamp.toDate().getTime(),
+        const movementData = filteredLogs.map(log => ({
+            x: log.timestamp.toDate().getHours(),
             y: log.movement
         }));
 
@@ -117,8 +169,10 @@ export async function renderDashboard() {
                 return value;
             }
         });
+        console.log("Dashboard render completed");
     } finally {
         isRendering = false;
+        console.log("isRendering set to false");
     }
 }
 
@@ -139,10 +193,10 @@ function createOrUpdateChart({
     const existingChart = chartInstances[canvasId];
     
     if (existingChart) {
-        // Update existing chart
-        existingChart.data.datasets[0].data = data;
+        // Update existing chart - replace dataset data
+        existingChart.data.datasets[0].data = [...data];
         existingChart.medicationTimes = medicationTimes;
-        existingChart.update();
+        existingChart.update('none');
     } else {
         // Create new chart
         const newChart = new Chart(ctx, {
@@ -163,9 +217,17 @@ function createOrUpdateChart({
                 scales: {
                     x: {
                         type: "linear",
+                        min: 7,
+                        max: 24,
                         ticks: {
+                            stepSize: 1,
                             callback: function(value) {
-                                return new Date(value).toLocaleTimeString();
+                                const hour = parseInt(value);
+                                if (hour === 0) return "12AM";
+                                if (hour < 12) return hour + "AM";
+                                if (hour === 12) return "12PM";
+                                if (hour === 24) return "12AM";
+                                return (hour - 12) + "PM";
                             }
                         }
                     },

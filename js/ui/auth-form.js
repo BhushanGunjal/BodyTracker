@@ -1,5 +1,5 @@
 import { register, login, logout, listenAuthState } from "../services/auth.js";
-import { renderDashboard } from "../core/chart.js";
+import { renderDashboard, initChartDateFilter } from "../core/chart.js";
 import { mapAuthError, mapDataError } from "../utils/error-mapper.js";
 
 const authSection = document.getElementById("auth-section");
@@ -68,6 +68,7 @@ export function initAuthForm() {
 
             try {
                 await renderDashboard();
+                initChartDateFilter();
             } catch (error) {
                 console.error("Dashboard render failed:", error);
                 alert(mapDataError(error));

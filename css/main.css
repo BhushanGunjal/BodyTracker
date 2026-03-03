@@ -1,8 +1,79 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f8f9fa; /* matches Bootstrap light */
+    background: linear-gradient(180deg, #f8f9fa 0%, #eef3f8 100%);
+    color: #212529;
+    min-height: 100vh;
+}
+
+h1,
+h4,
+h6 {
+    letter-spacing: 0.2px;
+}
+
+#auth-section .card,
+#dashboard {
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+#auth-section .card {
+    margin-top: 2rem;
+}
+
+#app-section .container {
+    max-width: 980px;
+}
+
+#dashboard .card-body {
+    padding: 1.5rem;
+}
+
+#dashboard h6 {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.75rem;
+}
+
+#dashboard canvas {
+    background-color: #fff;
+    border: 1px solid rgba(13, 110, 253, 0.12);
+    border-radius: 10px;
+    padding: 0.35rem;
+}
+
+#chart-date-filter {
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    font-weight: 500;
+}
+
+.btn {
+    border-radius: 10px;
+}
+
+.btn-lg {
+    padding: 0.6rem 1.1rem;
+    font-weight: 600;
 }
 
 .btn-group .btn {
     font-size: 1rem;
+}
+
+.modal-content {
+    border: 0;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+}
+
+@media (max-width: 768px) {
+    #dashboard .card-body {
+        padding: 1rem;
+    }
+
+    .btn-lg {
+        width: 100%;
+    }
 }
